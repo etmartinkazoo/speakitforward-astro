@@ -1,0 +1,79 @@
+---
+export interface Props {
+  item: {
+    title?: string;
+    subtitle?: string;
+    partners?: Array<{
+      image: string;
+      imageAlt: string;
+      name: string;
+    }>;
+  };
+}
+
+const { item } = Astro.props;
+const { title, subtitle, partners } = item;
+---
+
+<section class="py-20 bg-gradient-to-r from-gray-100 to-purple-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2
+        class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+      >
+        {title}
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="relative overflow-hidden">
+      <div class="flex animate-scroll space-x-12 items-center">
+        {/* First set of logos */}
+        <div class="flex space-x-12 items-center min-w-max">
+          {
+            partners?.map((partner) => (
+              <img
+                src={partner.image}
+                alt={partner.imageAlt}
+                class="h-12 w-auto opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+              />
+            ))
+          }
+        </div>
+        {/* Duplicate set for seamless loop */}
+        <div class="flex space-x-12 items-center min-w-max">
+          {
+            partners?.map((partner) => (
+              <img
+                src={partner.image}
+                alt={partner.imageAlt}
+                class="h-12 w-auto opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+</style>

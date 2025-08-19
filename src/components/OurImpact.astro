@@ -1,0 +1,116 @@
+---
+export interface Props {
+  item: {
+    title?: string;
+    subtitle?: string;
+    programs?: Array<{
+      image: string;
+      imageAlt: string;
+      title: string;
+      description: string;
+      color: string;
+      features: string[];
+    }>;
+  };
+}
+
+const { item } = Astro.props;
+const { title, subtitle, programs } = item;
+
+const getColorClasses = (color: string) => {
+  const colorMap: Record<
+    string,
+    { gradient: string; bg: string; text: string }
+  > = {
+    purple: {
+      gradient: "from-purple-600 to-purple-800",
+      bg: "from-purple-600/20",
+      text: "text-purple-600",
+    },
+    indigo: {
+      gradient: "from-indigo-600 to-indigo-800",
+      bg: "from-indigo-600/20",
+      text: "text-indigo-600",
+    },
+    pink: {
+      gradient: "from-pink-600 to-pink-800",
+      bg: "from-pink-600/20",
+      text: "text-pink-600",
+    },
+    green: {
+      gradient: "from-green-600 to-green-800",
+      bg: "from-green-600/20",
+      text: "text-green-600",
+    },
+  };
+  return colorMap[color] || colorMap.purple;
+};
+---
+
+<section
+  id="programs"
+  class="py-20 bg-gradient-to-br from-gray-50 to-purple-50"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2
+        class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+      >
+        {title}
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      {
+        programs?.map((program) => {
+          const colorClasses = getColorClasses(program.color);
+          return (
+            <div class="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group bg-white rounded-lg">
+              <div class="relative h-48 overflow-hidden">
+                <img
+                  src={program.image}
+                  alt={program.imageAlt}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div
+                  class={`absolute inset-0 bg-gradient-to-t ${colorClasses.bg} to-transparent`}
+                />
+              </div>
+              <div class="p-6">
+                <h3
+                  class={`text-2xl font-bold bg-gradient-to-r ${colorClasses.gradient} bg-clip-text text-transparent mb-3`}
+                >
+                  {program.title}
+                </h3>
+                <p class="text-lg text-gray-600 mb-4">{program.description}</p>
+                <ul class="space-y-2 text-gray-600">
+                  {program.features.map((feature) => (
+                    <li class="flex items-center">
+                      <svg
+                        class={`w-4 h-4 ${colorClasses.text} mr-2 flex-shrink-0`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

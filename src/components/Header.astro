@@ -1,0 +1,162 @@
+---
+import Button from "./ui/Button.astro";
+
+export interface Props {
+  logo?: string;
+  logoAlt?: string;
+  brandName?: string;
+  navItems?: Array<{
+    text: string;
+    href: string;
+  }>;
+  ctaButtonText?: string;
+  ctaButtonHref?: string;
+}
+
+const { logo, logoAlt, brandName, navItems, ctaButtonText, ctaButtonHref } =
+  Astro.props;
+---
+
+<nav
+  class="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo and Brand -->
+      <div class="flex items-center space-x-2">
+        {
+          logo && (
+            <img
+              src={logo}
+              alt={logoAlt || "Logo"}
+              class="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+            />
+          )
+        }
+        {
+          brandName && (
+            <span class="text-lg sm:text-xl font-bold text-gray-900">
+              {brandName}
+            </span>
+          )
+        }
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center space-x-6 xl:space-x-8">
+        {
+          navItems?.map((item) => (
+            <a
+              href={item.href}
+              class="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+            >
+              {item.text}
+            </a>
+          ))
+        }
+        {
+          ctaButtonText && (
+            <Button href={ctaButtonHref} variant="primary">
+              {ctaButtonText}
+            </Button>
+          )
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        class="lg:hidden p-2 text-gray-600 hover:text-purple-600 transition-colors"
+        id="mobile-menu-button"
+        aria-label="Toggle mobile menu"
+      >
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          id="menu-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg
+          class="h-6 w-6 hidden"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          id="close-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="lg:hidden hidden" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+        {
+          navItems?.map((item) => (
+            <a
+              href={item.href}
+              class="block px-3 py-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 transition-colors font-medium rounded-md"
+            >
+              {item.text}
+            </a>
+          ))
+        }
+        {
+          ctaButtonText && (
+            <div class="px-3 py-2">
+              <Button href={ctaButtonHref} variant="primary">
+                {ctaButtonText}
+              </Button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Mobile menu toggle functionality
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const menuIcon = document.getElementById("menu-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  if (mobileMenuButton && mobileMenu && menuIcon && closeIcon) {
+    mobileMenuButton.addEventListener("click", () => {
+      const isHidden = mobileMenu.classList.contains("hidden");
+
+      if (isHidden) {
+        // Show menu
+        mobileMenu.classList.remove("hidden");
+        menuIcon.classList.add("hidden");
+        closeIcon.classList.remove("hidden");
+      } else {
+        // Hide menu
+        mobileMenu.classList.add("hidden");
+        menuIcon.classList.remove("hidden");
+        closeIcon.classList.add("hidden");
+      }
+    });
+
+    // Close menu when clicking on a link
+    const mobileLinks = mobileMenu.querySelectorAll("a");
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+        menuIcon.classList.remove("hidden");
+        closeIcon.classList.add("hidden");
+      });
+    });
+  }
+</script>

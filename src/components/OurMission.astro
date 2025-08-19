@@ -1,0 +1,51 @@
+---
+export interface Props {
+  item: {
+    title?: string;
+    subtitle?: string;
+    missionItems?: Array<{
+      image: string;
+      title: string;
+      description: string;
+    }>;
+  };
+}
+
+const { item } = Astro.props;
+const { title, subtitle, missionItems } = item;
+---
+
+<section id="about" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2
+        class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+      >
+        {title}
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      {
+        missionItems?.map((item) => (
+          <div class="border-0 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="text-center pb-4">
+              <div
+                class={`w-16 h-16  rounded-full flex items-center justify-center mx-auto mb-4`}
+              >
+                <div class={`w-8 h-8 `}>
+                  <img src={item.image} alt="" />
+                </div>
+              </div>
+              <h2 class="text-xl">{item.title}</h2>
+            </div>
+            <div class="text-center text-gray-600">{item.description}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

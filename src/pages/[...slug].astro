@@ -1,0 +1,37 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getPages } from "src/lib/getPageData";
+import { getSinglePage } from "src/lib/getPageData";
+
+const { slug } = Astro.params;
+const safeSlug = typeof slug === "string" ? slug : "";
+const pageData = await getSinglePage("pages", safeSlug);
+---
+
+<Layout title=`` metaDescription=``>
+  <!-- {
+    pageData?.blocks &&
+      pageData.blocks.map((item: any) => (
+        <>
+          {item.collection === "hero" && <Hero item={item.item} />}
+          {item.collection === "how_it_works" && (
+            <Workacross item={item.item} />
+          )}
+          {item.collection === "title_with_description" && (
+            <TitleWithDescription item={item.item} />
+          )}
+          {item.collection === "services_areas" && (
+            <ServicesAreas item={item.item} />
+          )}
+          {item.collection === "two_col" && <TwoCol item={item.item} />}
+          {item.collection === "why_mulebox" && <WhyMulebox item={item.item} />}
+          {item.collection === "comparison" && <Table item={item.item} />}
+          {item.collection === "single_hero" && <HeroTwo item={item.item} />}
+          {item.collection === "meet_the_team" && <Team item={item.item} />}
+          {item.collection === "faq" && <FaqAccordion item={item.item} />}
+          {item.collection === "rich_text" && <RichText item={item.item} />}
+          {item.collection === "pricingFactors" && <Factors item={item.item} />}
+        </>
+      ))
+  } -->
+</Layout>
