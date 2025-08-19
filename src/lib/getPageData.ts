@@ -10,9 +10,24 @@ const defaultFields = [
       {
         item: [
           "*",
-          { buttons: ["*"] },
+          { stats: ["*", { stats_card_id: ["*"] }] },
+          { images: ["*"] },
           {
-            cards: ["*"],
+            buttons: [
+              "*",
+              {
+                button_id: ["*"],
+              },
+            ],
+          },
+          {
+            cards: [
+              "*",
+              {
+                our_mission_card_id: ["*"],
+                our_program_card_id: ["*"],
+              },
+            ],
           },
         ],
       },
@@ -66,7 +81,7 @@ export const getNavbar = async () => {
   try {
     const data: any = await directus.request(
       readSingleton("header", {
-        fields: ["*"],
+        fields: ["*", { button: ["*"] }],
       })
     );
 
@@ -81,7 +96,7 @@ export const getFooter = async () => {
   try {
     const data: any = await directus.request(
       readSingleton("footer", {
-        fields: ["*"],
+        fields: ["*", { list: ["*", { footer_nav_id: ["*"] }] }],
       })
     );
 

@@ -1,46 +1,76 @@
 ---
+import { getFooter } from "src/lib/getPageData";
+import { getAssetURL } from "src/utils/getImage";
+
+interface FooterLink {
+  text: string;
+  href: string;
+}
+
+interface ContactInfo {
+  email: string;
+  phone: string;
+  address: string;
+}
+
 export interface Props {
   logo?: string;
   logoAlt?: string;
   brandName?: string;
   description?: string;
-  contactInfo?: {
-    email: string;
-    phone: string;
-    address: string;
-  };
-  quickLinks?: Array<{
-    text: string;
-    href: string;
-  }>;
-  getInvolvedLinks?: Array<{
-    text: string;
-    href: string;
-  }>;
+  contactInfo?: ContactInfo;
+  quickLinks?: Array<FooterLink>;
+  getInvolvedLinks?: Array<FooterLink>;
   copyrightText?: string;
 }
 
-const {
-  logo,
-  logoAlt,
-  brandName,
-  description,
-  contactInfo,
-  quickLinks,
-  getInvolvedLinks,
-  copyrightText,
-} = Astro.props;
+const footer = await getFooter();
+
+// Map the footer data to the component props
+const logoUrl = footer?.logo ? getAssetURL(footer.logo) : null;
+const brandName = footer?.brand_name || "Speak It Forward";
+const description = footer?.description;
+const contactInfo: ContactInfo = {
+  email: footer?.email || "",
+  phone: footer?.phone_number || "",
+  address: footer?.location || "",
+};
+
+// Extract quick links and get involved links from the list
+const quickLinksData =
+  footer?.list?.find((item: any) => item.footer_nav_id?.title === "Quick Links")
+    ?.footer_nav_id?.list || [];
+
+const getInvolvedLinksData =
+  footer?.list?.find(
+    (item: any) => item.footer_nav_id?.title === "Get Involved"
+  )?.footer_nav_id?.list || [];
+
+const quickLinks: FooterLink[] = quickLinksData.map((item: any) => ({
+  text: item.label,
+  href: item.link,
+}));
+
+const getInvolvedLinks: FooterLink[] = getInvolvedLinksData.map(
+  (item: any) => ({
+    text: item.label,
+    href: item.link,
+  })
+);
+
+const copyrightText = `© ${new Date().getFullYear()} ${brandName}. All rights reserved.`;
+const logoAlt = `${brandName} Logo`;
 ---
 
-<footer id="contact" class="bg-gray-900 text-white py-16">
+<footer id="contact" class="bg-neutral-900 text-white py-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid md:grid-cols-4 gap-8">
       <div class="md:col-span-2">
         <div class="flex items-center space-x-2 mb-4">
           {
-            logo && (
+            logoUrl && (
               <img
-                src={logo}
+                src={logoUrl}
                 alt={logoAlt || "Logo"}
                 class="w-10 h-10 object-contain"
               />
@@ -50,7 +80,7 @@ const {
         </div>
         {
           description && (
-            <p class="text-gray-400 mb-6 max-w-md">{description}</p>
+            <p class="text-neutral-400 mb-6 max-w-md">{description}</p>
           )
         }
         {
@@ -58,7 +88,7 @@ const {
             <div class="space-y-2">
               <div class="flex items-center space-x-3">
                 <svg
-                  class="w-5 h-5 text-purple-400"
+                  class="w-5 h-5 text-primary-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -70,11 +100,11 @@ const {
                     d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                <span class="text-gray-400">{contactInfo.email}</span>
+                <span class="text-neutral-400">{contactInfo.email}</span>
               </div>
               <div class="flex items-center space-x-3">
                 <svg
-                  class="w-5 h-5 text-purple-400"
+                  class="w-5 h-5 text-primary-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -86,11 +116,11 @@ const {
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-                <span class="text-gray-400">{contactInfo.phone}</span>
+                <span class="text-neutral-400">{contactInfo.phone}</span>
               </div>
               <div class="flex items-center space-x-3">
                 <svg
-                  class="w-5 h-5 text-purple-400"
+                  class="w-5 h-5 text-primary-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -108,7 +138,7 @@ const {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span class="text-gray-400">{contactInfo.address}</span>
+                <span class="text-neutral-400">{contactInfo.address}</span>
               </div>
             </div>
           )
@@ -119,7 +149,7 @@ const {
         <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
         <ul class="space-y-2">
           {
-            quickLinks?.map((link) => (
+            quickLinks?.map((link: FooterLink) => (
               <li>
                 <a
                   href={link.href}
@@ -137,7 +167,7 @@ const {
         <h3 class="text-lg font-semibold mb-4">Get Involved</h3>
         <ul class="space-y-2">
           {
-            getInvolvedLinks?.map((link) => (
+            getInvolvedLinks?.map((link: FooterLink) => (
               <li>
                 <a
                   href={link.href}

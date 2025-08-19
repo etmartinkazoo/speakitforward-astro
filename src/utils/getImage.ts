@@ -1,4 +1,5 @@
 export function getAssetURL(id: string) {
   if (!id) return null;
-  return `https://mule-box.directus.app/assets/${id}`;
+  const url = import.meta.env.PUBLIC_DIRECTUS_URL;
+  return `${url}/assets/${id}`;
 }

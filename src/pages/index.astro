@@ -4,10 +4,10 @@ import OurImpact from "@components/OurImpact.astro";
 import OurMission from "@components/OurMission.astro";
 import OurPartners from "@components/OurPartners.astro";
 import OurPrograms from "@components/OurPrograms.astro";
+import Cta from "@components/Cta.astro";
 import Layout from "@layouts/Layout.astro";
 import { getSinglePage } from "src/lib/getPageData";
 const homePage = await getSinglePage("pages", "/home");
-console.dir(homePage, { depth: null });
 ---
 
 <Layout title={""} metaDescription={""}>
@@ -15,10 +15,11 @@ console.dir(homePage, { depth: null });
     homePage.blocks.map((item: any) => (
       <>
         {item.collection === "hero" && <Hero item={item.item} />}
-        {item.collection === "our_partners" && <OurPartners item={item.item} />}
-        {item.collection === "our_impact" && <OurImpact item={item.item} />}
         {item.collection === "our_mission" && <OurMission item={item.item} />}
-        {item.collection === "our_program" && <OurPrograms item={item.item} />}
+        {item.collection === "our_programs" && <OurPrograms item={item.item} />}
+        {item.collection === "our_impact" && <OurImpact item={item.item} />}
+        {item.collection === "our_partners" && <OurPartners item={item.item} />}
+        {item.collection === "cta" && <Cta item={item.item} />}
       </>
     ))
   }

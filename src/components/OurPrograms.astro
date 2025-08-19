@@ -1,50 +1,51 @@
 ---
+import { getAssetURL } from "@utils/getImage";
+
 export interface Props {
   item: {
     title?: string;
-    subtitle?: string;
-    programs?: Array<{
-      image: string;
-      imageAlt: string;
-      title: string;
-      description: string;
-      color: string;
-      features: string[];
+    description?: string;
+    cards?: Array<{
+      our_program_card_id: {
+        image: string;
+        title: string;
+        description: string;
+        list?: Array<{
+          title: string;
+        }>;
+      };
     }>;
   };
 }
 
 const { item } = Astro.props;
-const { title, subtitle, programs } = item;
+const { title, description, cards } = item;
 
 // Helper function to get color classes
-const getColorClasses = (color: string) => {
-  const colorMap: Record<
-    string,
-    { gradient: string; bg: string; text: string }
-  > = {
-    purple: {
+const getColorClasses = (index: number) => {
+  const colors = [
+    {
       gradient: "from-purple-600 to-purple-800",
       bg: "from-purple-600/20",
       text: "text-purple-600",
     },
-    indigo: {
+    {
       gradient: "from-indigo-600 to-indigo-800",
       bg: "from-indigo-600/20",
       text: "text-indigo-600",
     },
-    pink: {
+    {
       gradient: "from-pink-600 to-pink-800",
       bg: "from-pink-600/20",
       text: "text-pink-600",
     },
-    green: {
+    {
       gradient: "from-green-600 to-green-800",
       bg: "from-green-600/20",
       text: "text-green-600",
     },
-  };
-  return colorMap[color] || colorMap.purple;
+  ];
+  return colors[index % colors.length];
 };
 ---
 
@@ -60,20 +61,20 @@ const getColorClasses = (color: string) => {
         {title}
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-        {subtitle}
+        {description}
       </p>
     </div>
 
     <div class="grid lg:grid-cols-2 gap-8">
       {
-        programs?.map((program) => {
-          const colorClasses = getColorClasses(program.color);
+        cards?.map((card, index) => {
+          const colorClasses = getColorClasses(index);
           return (
             <div class="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group bg-white rounded-lg">
               <div class="relative h-48 overflow-hidden">
                 <img
-                  src={program.image}
-                  alt={program.imageAlt}
+                  src={getAssetURL(card.our_program_card_id.image)}
+                  alt={card.our_program_card_id.title}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div
@@ -84,29 +85,33 @@ const getColorClasses = (color: string) => {
                 <h3
                   class={`text-2xl font-bold bg-gradient-to-r ${colorClasses.gradient} bg-clip-text text-transparent mb-3`}
                 >
-                  {program.title}
+                  {card.our_program_card_id.title}
                 </h3>
-                <p class="text-lg text-gray-600 mb-4">{program.description}</p>
-                <ul class="space-y-2 text-gray-600">
-                  {program.features.map((feature) => (
-                    <li class="flex items-center">
-                      <svg
-                        class={`w-4 h-4 ${colorClasses.text} mr-2 flex-shrink-0`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <p class="text-lg text-gray-600 mb-4">
+                  {card.our_program_card_id.description}
+                </p>
+                {card.our_program_card_id.list && (
+                  <ul class="space-y-2 text-gray-600">
+                    {card.our_program_card_id.list.map((item) => (
+                      <li class="flex items-center">
+                        <svg
+                          class={`w-4 h-4 ${colorClasses.text} mr-2 flex-shrink-0`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                        {item.title}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           );
